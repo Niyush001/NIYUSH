@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niyush - Music Recommendations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .login-container {
+            max-width: 400px;
+            width: 90%;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: #333;
+            font-size: 28px;
+        }
+        
+        .logo p {
+            color: #888;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #333;
+            outline: none;
+        }
+        
+        .login-btn {
+            width: 100%;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .login-btn:hover {
+            background-color: #555;
+        }
+        
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        .login-options a {
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .login-options a:hover {
+            text-decoration: underline;
+        }
+        
+        .social-login {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .social-login p {
+            color: #888;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .social-login p::before,
+        .social-login p::after {
+            content: "";
+            display: inline-block;
+            width: 40%;
+            height: 1px;
+            background-color: #e0e0e0;
+            position: absolute;
+            top: 50%;
+        }
+        
+        .social-login p::before {
+            left: 0;
+        }
+        
+        .social-login p::after {
+            right: 0;
+        }
+        
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>Niyush</h1>
+            <p>Music Recommendations</p>
+        </div>
+        
+        <form action="home.html" method="get">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="login-btn">Login</button>
+            
+            <div class="login-options">
+                <a href="#">Forgot password?</a>
+                <a href="#">Create account</a>
+            </div>
+        </form>
+        
+        <div class="social-login">
+            <p>or</p>
+            <div class="social-buttons">
+                <div class="social-btn">G</div>
+                <div class="social-btn">f</div>
+                <div class="social-btn">in</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

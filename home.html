@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niyush - Music Recommendations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f8f8;
+        }
+        
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .logout-btn {
+            color: #666;
+            text-decoration: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        
+        .logout-btn:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .search-container {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .search-bar {
+            width: 100%;
+            padding: 12px;
+            padding-right: 40px;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            cursor: pointer;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .tab {
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            user-select: none;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        
+        .tab.active {
+            background-color: #333;
+            color: white;
+        }
+        
+        .tab:not(.active) {
+            background-color: #f0f0f0;
+        }
+        
+        .tab:not(.active):hover {
+            background-color: #e0e0e0;
+        }
+        
+        .slider {
+            position: relative;
+            height: 6px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+        
+        .slider-prev, .slider-next {
+            position: absolute;
+            top: -8px;
+            color: #888;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .slider-prev {
+            left: -20px;
+        }
+        
+        .slider-next {
+            right: -20px;
+        }
+        
+        .slider-progress {
+            position: absolute;
+            height: 100%;
+            width: 40%;
+            background-color: #888;
+            border-radius: 3px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .artists-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .artist-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .artist-item:hover .artist-avatar {
+            transform: scale(1.05);
+        }
+        
+        .artist-avatar {
+            width: 80px;
+            height: 80px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+        
+        .artist-name {
+            font-size: 14px;
+        }
+        
+        .track-list {
+            margin-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+        }
+        
+        .track-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        
+        .track-header:hover .track-header-avatar {
+            transform: scale(1.05);
+        }
+        
+        .track-header-avatar {
+            width: 50px;
+            height: 50px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            margin-right: 15px;
+            transition: transform 0.2s;
+        }
+        
+        .track-header-info h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .track-header-info p {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .track-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        
+        .track-item:hover {
+            background-color: #f5f5f5;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+        
+        .track-number {
+            width: 20px;
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+        }
+        
+        .track-details {
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+        
+        .track-name {
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+        
+        .track-album {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .track-duration {
+            color: #888;
+            font-size: 14px;
+            margin-right: 5px;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+            margin-top: 30px;
+            position: sticky;
+            bottom: 0;
+            background-color: white;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #888;
+            text-decoration: none;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        
+        .nav-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .nav-item.active {
+            color: #f44336;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        /* Add more tracks section */
+        .more-tracks {
+            display: none;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        
+        /* Player controls at bottom */
+        .player-control {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .now-playing {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .now-playing-img {
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 5px;
+        }
+        
+        .player-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .player-btn {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header with user info and logout -->
+        <div class="header">
+            <div class="user-info">
+                <div class="avatar">D</div>
+                <div>
+                    <div>Welcome back</div>
+                    <div>dd</div>
+                </div>
+            </div>
+            <a href="login.html" class="logout-btn">Logout</a>
+        </div>
+        
+        <!-- Search bar -->
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="Search for artists, songs, or podcasts">
+            <div class="search-icon">🔍</div>
+        </div>
+        
+        <!-- Navigation tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="changeTab(this)">All</div>
+            <div class="tab" onclick="changeTab(this)">Popular</div>
+            <div class="tab" onclick="changeTab(this)">Recent</div>
+            <div class="tab" onclick="changeTab(this)">Recommended</div>
+        </div>
+        
+        <!-- Slider -->
+        <div class="slider">
+            <div class="slider-prev" onclick="slide('prev')">◄</div>
+            <div class="slider-progress"></div>
+            <div class="slider-next" onclick="slide('next')">►</div>
+        </div>
+        
+        <!-- Top Artists Section -->
+        <div class="section-title">Top Artists</div>
+        <div class="artists-grid">
+            <!-- Artist 1 -->
+            <div class="artist-item" onclick="showArtist('The Weeknd')">
+                <div class="artist-avatar"></div>
+                <div class="artist-name">The Weeknd</div>
+            </div>
+            
+            <!-- Artist 2 -->
+            <div class="artist-item" onclick="showArtist('Taylor Swift')">
+                <div class="artist-avatar"></div>
+                <div class="artist-name">Taylor Swift</div>
+            </div>
+            
+            <!-- Artist 3 -->
+            <div class="artist-item" onclick="showArtist('Drake')">
+                <div class="artist-avatar"></div>
+                <div class="artist-name">Drake</div>
+            </div>
+            
+            <!-- Artist 4 -->
+            <div class="artist-item" onclick="showArtist('Billie Eilish')">
+                <div class="artist-avatar"></div>
+                <div class="artist-name">Billie Eilish</div>
+            </div>
+            
+            <!-- Artist 5 -->
+            <div class="artist-item" onclick="showArtist('Post Malone')">
+                <div class="artist-avatar"></div>
+                <div class="artist-name">Post Malone</div>
+            </div>
+            
+            <!-- Artist 6 -->
+            <div class="artist-item" onclick="showArtist('Dua Lipa')">
+                <div class="artist-avatar"></div>
+                <div class="artist-name">Dua Lipa</div>
+            </div>
+        </div>
+        
+        <!-- Track List -->
+        <div class="track-list">
+            <div class="track-header" onclick="toggleMoreTracks()">
+                <div class="track-header-avatar"></div>
+                <div class="track-header-info">
+                    <h3>The Weeknd</h3>
+                    <p>Popular tracks</p>
+                </div>
+            </div>
+            
+            <!-- Track Item -->
+            <div class="track-item" onclick="playTrack('Blinding Lights', 'The Weeknd')">
+                <div class="track-number">1</div>
+                <div class="track-details">
+                    <div class="track-name">Blinding Lights</div>
+                    <div class="track-album">After Hours</div>
+                </div>
+                <div class="track-duration">3:20</div>
+            </div>
+            
+            <!-- More tracks (initially hidden) -->
+            <div id="more-tracks" class="more-tracks">
+                <div class="track-item" onclick="playTrack('Save Your Tears', 'The Weeknd')">
+                    <div class="track-number">2</div>
+                    <div class="track-details">
+                        <div class="track-name">Save Your Tears</div>
+                        <div class="track-album">After Hours</div>
+                    </div>
+                    <div class="track-duration">3:35</div>
+                </div>
+                
+                <div class="track-item" onclick="playTrack('Starboy', 'The Weeknd')">
+                    <div class="track-number">3</div>
+                    <div class="track-details">
+                        <div class="track-name">Starboy</div>
+                        <div class="track-album">Starboy</div>
+                    </div>
+                    <div class="track-duration">3:50</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="navigation">
+            <div class="nav-item active" onclick="navigate('home')">
+                <div class="nav-icon">🏠</div>
+                <div>Home</div>
+            </div>
+            <div class="nav-item" onclick="navigate('explore')">
+                <div class="nav-icon">🔍</div>
+                <div>Explore</div>
+            </div>
+            <div class="nav-item" onclick="navigate('library')">
+                <div class="nav-icon">❤️</div>
+                <div>Library</div>
+            </div>
+            <div class="nav-item" onclick="navigate('profile')">
+                <div class="nav-icon">👤</div>
+                <div>Profile</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Player control (initially hidden) -->
+    <div id="player" class="player-control">
+        <div class="now-playing">
+            <div class="now-playing-img"></div>
+            <div>
+                <div id="track-title">Track Name</div>
+                <div id="track-artist">Artist</div>
+            </div>
+        </div>
+        <div class="player-buttons">
+            <div class="player-btn">⏮️</div>
+            <div class="player-btn" id="play-pause">▶️</div>
+            <div class="player-btn">⏭️</div>
+        </div>
+    </div>
+
+    <script>
+        // Function to handle tab switching
+        function changeTab(tab) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            
+            // Add active class to clicked tab
+            tab.classList.add('active');
+            
+            // Show alert to indicate the tab was changed
+            alert('Changed to ' + tab.textContent + ' tab');
+        }
+        
+        // Function to handle slider navigation
+        function slide(direction) {
+            alert('Sliding ' + direction);
+        }
+        
+        // Function to show artist page
+        function showArtist(artistName) {
+            alert('Showing ' + artistName + ' page');
+        }
+        
+        // Function to toggle more tracks
+        function toggleMoreTracks() {
+            const moreTracks = document.getElementById('more-tracks');
+            if (moreTracks.style.display === 'block') {
+                moreTracks.style.display = 'none';
+            } else {
+                moreTracks.style.display = 'block';
+            }
+        }
+        
+        // Function to simulate playing a track
+        function playTrack(trackName, artistName) {
+            const player = document.getElementById('player');
+            document.getElementById('track-title').textContent = trackName;
+            document.getElementById('track-artist').textContent = artistName;
+            player.style.display = 'flex';
+            
+            // Change play button to pause
+            document.getElementById('play-pause').textContent = '⏸️';
+            
+            // Alert to show track is playing
+            alert('Now playing: ' + trackName + ' by ' + artistName);
+        }
+        
+        // Function to handle navigation
+        function navigate(section) {
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to clicked nav item
+            event.currentTarget.classList.add('active');
+            
+            // Alert to indicate section change
+            alert('Navigating to ' + section);
+        }
+        
+        // Make search bar interactive
+        document.querySelector('.search-bar').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const searchTerm = this.value.trim();
+                if (searchTerm) {
+                    alert('Searching for: ' + searchTerm);
+                }
+            }
+        });
+        
+        document.querySelector('.search-icon').addEventListener('click', function() {
+            const searchTerm = document.querySelector('.search-bar').value.trim();
+            if (searchTerm) {
+                alert('Searching for: ' + searchTerm);
+            } else {
+                alert('Please enter a search term');
+            }
+        });
+        
+        // Toggle play/pause
+        document.getElementById('play-pause').addEventListener('click', function() {
+            if (this.textContent === '▶️') {
+                this.textContent = '⏸️';
+                alert('Playing music');
+            } else {
+                this.textContent = '▶️';
+                alert('Paused music');
+            }
+        });
+    </script>
+</body>
+</html>
